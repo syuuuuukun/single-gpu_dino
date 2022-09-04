@@ -320,7 +320,7 @@ def train_one_epoch(student, teacher, teacher_without_ddp, dino_loss, data_loade
         
         ##勾配蓄積を行えるように書き換える
         for grad_itr in range(grad_acc_steps):
-            calc_images = [im[grad_itr*64:(grad_itr+1)*64].cuda(non_blocking=True) for im in images]
+            calc_images = [im[grad_itr*args.batch_size_per_gpu:(grad_itr+1)*args.batch_size_per_gpu].cuda(non_blocking=True) for im in images]
             with torch.cuda.amp.autocast(fp16_scaler is not None):
                 teacher_output = teacher(calc_images[:2])  # only the 2 global views pass through the teacher
                 student_output = student(calc_images)
